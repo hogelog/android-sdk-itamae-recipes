@@ -6,6 +6,7 @@ execute "add 32bit architecture" do
     dpkg --add-architecture i386
     apt-get update
   EOM
+  not_if "test -e /lib/ld-linux.so.2"
 end
 
 package "libncurses5:i386"
@@ -27,12 +28,27 @@ execute "download sdk" do
   not_if "test -e /opt/src/android-sdk_#{VERSION}"
 end
 
+user "android" do
+  create_home true
+end
+
 execute "update android sdk" do
   command <<-EOM
     export ANDROID_HOME=/opt/android-sdk
     export ANDROID_SDK=/opt/android-sdk
     export PATH=$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH
     echo y | android update sdk --no-ui --all --filter #{SDK_PACKAGES}
+    chown -R android:android /opt/android-sdk/
   EOM
   not_if "test -e /opt/android-sdk/platform-tools"
+end
+
+execute "create emulator" do
+  user "android"
+  command <<-EOM
+    export ANDROID_HOME=/opt/android-sdk
+    export ANDROID_SDK=/opt/android-sdk
+    export PATH=$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH
+    echo | android create avd -n 23-x86 -t android-23
+  EOM
 end
