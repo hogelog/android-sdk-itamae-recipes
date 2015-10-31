@@ -1,13 +1,16 @@
 VERSION = "r24.3.4"
 SDK_PACKAGES = "platform-tools,build-tools-23.0.2,android-23,sys-img-x86-android-23,extra-android-m2repository,extra-google-m2repository"
 
-execute "install 32bit libraries" do
+execute "add 32bit architecture" do
   command <<-EOM
     dpkg --add-architecture i386
     apt-get update
-    apt-get install libncurses5:i386 libstdc++6:i386 zlib1g:i386
   EOM
 end
+
+package "libncurses5:i386"
+package "libstdc++6:i386"
+package "zlib1g:i386"
 
 package "openjdk-8-jdk"
 
