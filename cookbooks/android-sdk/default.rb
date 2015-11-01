@@ -15,6 +15,8 @@ package "zlib1g:i386"
 
 package "openjdk-8-jdk"
 
+package "xvfb"
+
 directory "/opt/src"
 
 execute "download sdk" do
