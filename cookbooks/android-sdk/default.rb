@@ -1,5 +1,5 @@
 VERSION = "r24.3.4"
-SDK_PACKAGES = "platform-tools,build-tools-23.0.2,android-23,sys-img-x86-android-23,extra-android-m2repository,extra-google-m2repository"
+SDK_PACKAGES = "platform-tools,build-tools-23.0.2,android-23,sys-img-x86-android-23,sys-img-armeabi-v7a-android-23,extra-android-m2repository,extra-google-m2repository"
 
 execute "add 32bit architecture" do
   command <<-EOM
@@ -49,6 +49,8 @@ execute "create emulator" do
     export ANDROID_HOME=/opt/android-sdk
     export ANDROID_SDK=/opt/android-sdk
     export PATH=$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH
-    echo | android create avd -n 23-x86 -t android-23
+    echo | android create avd -n 23-x86 -t android-23 -b x86
+    echo | android create avd -n 23-arm -t android-23 -b armeabi-v7a
   EOM
+  not_if "test -e /home/android/.android/avd/23-arm.ini"
 end
